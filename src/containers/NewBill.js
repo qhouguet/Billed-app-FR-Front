@@ -1,4 +1,5 @@
 import { ROUTES_PATH } from '../constants/routes.js'
+import { authorizedFileExtensions } from '../constants/authorizedFileExtensions.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
@@ -17,28 +18,41 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`)
+    const errorInput = this.document.getElementById('error-extension')
+    const file = fileInput.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    formData.append('file', file)
-    formData.append('email', email)
+    const fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1)
 
-    this.store
-      .bills()
-      .create({
-        data: formData,
-        headers: {
-          noContentType: true
-        }
-      })
-      .then(({fileUrl, key}) => {
-        console.log(fileUrl)
-        this.billId = key
-        this.fileUrl = fileUrl
-        this.fileName = fileName
-      }).catch(error => console.error(error))
+    if(authorizedFileExtensions.includes(fileExtension)) {
+        const formData = new FormData()
+        const email = JSON.parse(localStorage.getItem("user")).email
+        formData.append('file', file)
+        formData.append('email', email)
+        fileInput.classList.remove("red-border")
+        fileInput.classList.add("blue-border")
+        errorInput.classList.add("hide")
+        this.store
+          .bills()
+          .create({
+            data: formData,
+            headers: {
+              noContentType: true
+            }
+          })
+          .then(({fileUrl, key}) => {
+            console.log(fileUrl)
+            this.billId = key
+            this.fileUrl = fileUrl
+            this.fileName = fileName
+          }).catch(error => console.error(error))
+    } else {
+      fileInput.classList.remove("blue-border")
+      fileInput.classList.add("red-border")
+      errorInput.classList.remove("hide")
+      e.target.value = ""
+    }
   }
   handleSubmit = e => {
     e.preventDefault()

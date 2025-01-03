@@ -2,6 +2,7 @@ import calendarIcon from '../assets/svg/calendar.js'
 import euroIcon from '../assets/svg/euro.js'
 import pctIcon from '../assets/svg/pct.js'
 import eyeWhite from '../assets/svg/eye_white.js'
+import eyeGray from '../assets/svg/eye_gray.js'
 import { formatDate } from '../app/format.js'
 
 export const modal = () => (`
@@ -22,6 +23,11 @@ export const modal = () => (`
   `)
 
 export default (bill) => {
+  const hasFileAttached = bill.fileName && bill.fileName !== "null" && bill.fileName.substring(bill.fileName.lastIndexOf('/') + 1) !== "null"
+  const fileName = hasFileAttached ? bill.fileName : "Aucun justificatif trouvé."
+  const fileUrl = hasFileAttached ? bill.fileUrl : '' 
+
+  const eyeIcon = hasFileAttached ? eyeWhite : eyeGray
 
   return (`
     <div class="container dashboard-form" data-testid="dashboard-form">
@@ -68,9 +74,9 @@ export default (bill) => {
         <div class="col-sm">
           <label for="file" class="bold-label">Justificatif</label>
             <div class='input-field input-flex file-flex'>
-            <span id="file-name-admin">${bill.fileName}</span>
+            <span id="file-name-admin">${fileName}</span>
             <div class='icons-container'>
-              <span id="icon-eye-d" data-testid="icon-eye-d" data-bill-url="${bill.fileUrl}"> ${eyeWhite} </span>
+              <span id="icon-eye-d" class="${hasFileAttached ? '' : 'disabled'}" data-testid="icon-eye-d" data-bill-url="${fileUrl}"> ${eyeIcon} </span>
             </div>
           </div>
         </div>
@@ -79,7 +85,7 @@ export default (bill) => {
        ${bill.status === 'pending' ? (`
         <div class="col-sm">
           <label for="commentary-admin" class="bold-label">Ajouter un commentaire</label>
-          <textarea id="commentary2" class="form-control blue-border" data-testid="commentary2" rows="5"></textarea>
+          <textarea id="commentary2" class="form-control border-base blue-border" data-testid="commentary2" rows="5"></textarea>
         </div>
        `) : (`
         <div class="col-sm">

@@ -15,11 +15,26 @@
   margin-top: 16px;
 }
 
-.blue-border {
-  opacity: 0.5;
-  border: 2px solid #0D5AE5 !important;
+.border-base {
+  opacity: 0.5;  
   box-sizing: border-box;
   border-radius: 5px;
+}
+
+.blue-border {
+  border: 2px solid #0D5AE5 !important;
+}
+
+.red-border {
+  border: 2px solid #b32727 !important;
+}
+
+.hide{
+  display: none;
+}
+
+#error-extension {
+  margin: 5px 0 0;
 }
 
 label {
