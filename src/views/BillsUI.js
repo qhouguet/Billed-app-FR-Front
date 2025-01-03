@@ -4,6 +4,8 @@ import LoadingPage from "./LoadingPage.js"
 
 import Actions from './Actions.js'
 
+import { antiChrono } from '../constants/antichrono.js'
+
 const row = (bill) => {
   return (`
     <tr>
@@ -20,7 +22,7 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  return (data && data.length) ? data.sort(antiChrono.prod).map(bill => row(bill)).join("") : ""
 }
 
 export default ({ data: bills, loading, error }) => {
